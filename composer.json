@@ -2,7 +2,8 @@
 	"name": "techaxion/user-roleright-laravel",
 	"description": "User Role and Right Management With Route",
 	"type": "library",
-	"version": "1.0.0",
+	"version": "1.0.1",
+	"prefer-stable": true,
 	"minimum-stability": "stable",
 	"license": "MIT",
 	"autoload": {
