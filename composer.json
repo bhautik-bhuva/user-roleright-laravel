@@ -3,7 +3,7 @@
 	"description": "User Role and Right Management With Route",
 	"type": "library",
 	"version": "1.0.0",
-	"minimum-stability": "dev",
+	"minimum-stability": "stable",
 	"license": "MIT",
 	"autoload": {
 		"psr-4": {
