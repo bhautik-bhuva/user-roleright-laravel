@@ -1,10 +1,7 @@
 {
 	"name": "techaxion/user-roleright-laravel",
 	"description": "User Role and Right Management With Route",
-	"type": "library",
-	"version": "1.0.1",
-	"prefer-stable": true,
-	"minimum-stability": "stable",
+	"version": "1.0.0",
 	"license": "MIT",
 	"autoload": {
 		"psr-4": {
@@ -17,5 +14,11 @@
 			"email": "bhargav.bhuva@techaxion.com"
 		}
 	],
-	"require": {}
+	"support": {
+		"email": "bhargav.bhuva@techaxion.com",
+		"source": "https://github.com/bhautik-bhuva/user-roleright-laravel"
+	},
+	"require": {
+		"php": "^8.2"
+	}
 }
