@@ -1,18 +1,20 @@
 {
-    "name": "techaxion/user-roleright-laravel",
-    "description": "User Role and Right Management With Route",
-    "type": "library",
-    "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "Techaxion\\UserRolerightLaravel\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "Bhargav Bhuva",
-            "email": "bhargav.bhuva@techaxion.com"
-        }
-    ],
-    "require": {}
+	"name": "techaxion/user-roleright-laravel",
+	"description": "User Role and Right Management With Route",
+	"type": "library",
+	"version": "1.0.0",
+	"minimum-stability": "dev",
+	"license": "MIT",
+	"autoload": {
+		"psr-4": {
+			"Techaxion\\UserRolerightLaravel\\": "src/"
+		}
+	},
+	"authors": [
+		{
+			"name": "Bhargav Bhuva",
+			"email": "bhargav.bhuva@techaxion.com"
+		}
+	],
+	"require": {}
 }
