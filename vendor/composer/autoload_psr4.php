@@ -6,5 +6,5 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Techaxion\\UserRolerightLaravel\\' => array($baseDir . '/src'),
+    'Techaxion\\UserAccess\\' => array($baseDir . '/src'),
 );

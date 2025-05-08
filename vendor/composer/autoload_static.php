@@ -9,12 +9,12 @@ class ComposerStaticInit4d4277c9060c4215745120f6a1d0d3fc
     public static $prefixLengthsPsr4 = array (
         'T' => 
         array (
-            'Techaxion\\UserRolerightLaravel\\' => 31,
+            'Techaxion\\UserAccess\\' => 21,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Techaxion\\UserRolerightLaravel\\' => 
+        'Techaxion\\UserAccess\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),
