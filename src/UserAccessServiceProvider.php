@@ -8,20 +8,14 @@ class UserAccessServiceProvider extends ServiceProvider
 {
     public function boot()
     {  
+        // Load the routes from the routes directory
+        $this->loadRoutesFrom(__DIR__.'/routes/DynamicRoutes.php');
+    }
+    
+    public function register()
+    {
         $this->publishes([
             __DIR__.'/database/migrations' => database_path('migrations'),
         ], 'migrations');
-
-        // $this->publishes([
-        //     dirname(__DIR__,1).'/config/access.php' => config_path('access.php'),
-        // ]);
-    }
-
-    public function register()
-    {
-        $this->loadRoutesFrom(__DIR__.'/routes/DynamicRoutes.php');
-        
-        // bindings or helpers
-        // $this->mergeConfigFrom(dirname(__DIR__,1).'/config/access.php', 'access');
-    }
+   }
 }
