@@ -17,7 +17,7 @@ class UserAccessServiceProvider extends ServiceProvider
 
     public function register()
     {
-        $this->loadRoutesFrom(dirname(__DIR__).'/routes/DynamicRoutes.php');
+        $this->loadRoutesFrom(__DIR__.'/routes/DynamicRoutes.php');
         
         // bindings or helpers
         // $this->mergeConfigFrom(dirname(__DIR__,1).'/config/access.php', 'access');
