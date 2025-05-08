@@ -8,7 +8,9 @@ class UserAccessServiceProvider extends ServiceProvider
 {
     public function boot()
     {  
-        $this->loadMigrationsFrom(__DIR__.'/database/migrations');
+        $this->publishes([
+            __DIR__.'/database/migrations' => database_path('migrations'),
+        ], 'migrations');
 
         // $this->publishes([
         //     dirname(__DIR__,1).'/config/access.php' => config_path('access.php'),
