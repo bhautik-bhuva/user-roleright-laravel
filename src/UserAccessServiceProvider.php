@@ -8,8 +8,6 @@ class UserAccessServiceProvider extends ServiceProvider
 {
     public function boot()
     {  
-        // Load the routes from the routes directory
-        $this->loadRoutesFrom(__DIR__.'/routes/DynamicRoutes.php');
     }
     
     public function register()
@@ -17,5 +15,8 @@ class UserAccessServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/database/migrations' => database_path('migrations'),
         ], 'migrations');
+        
+        // Load the routes from the routes directory
+        $this->loadRoutesFrom(__DIR__.'/routes/DynamicRoutes.php');
    }
 }
