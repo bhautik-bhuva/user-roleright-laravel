@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('module_actions', function (Blueprint $table) {
+        Schema::create('module_action', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('controller');
@@ -27,8 +27,9 @@ return new class extends Migration
             $table->string('module_label');
             $table->tinyInteger('status')->default(1)->comment('0 = INACTIVE, 1 = ACTIVE, 2 = MAINTENANCE');
             $table->dateTime('created_date')->default(now())->useCurrentOnUpdate();
-            $table->json('extra_options')->default('{}');
+            $table->json('extra_options')->nullable();
         });
+
     }
 
     /**
@@ -36,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('module_actions');
+        Schema::dropIfExists('module_action');
     }
 };

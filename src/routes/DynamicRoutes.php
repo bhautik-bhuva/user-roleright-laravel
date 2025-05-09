@@ -1,36 +1,29 @@
 <?php
 
+namespace Techaxion\UserAccess\Routes;
+
 use Illuminate\Support\Facades\Route;
+use Techaxion\UserAccess\Controllers\RoleController;
+use Techaxion\UserAccess\Controllers\RightController;
 
 $connection = env('DB_CONNECTION');
 $dbConn = \DB::connection($connection);
 
 $dataAdmin = $dbConn->table('module_action')->where('status',1)->whereIn("menu_type",["Admin","Admin Backend"])->get()->toArray();
+$dataAdmin = json_decode(json_encode($dataAdmin), true);
 
 foreach ($dataAdmin as $key => $value) {
-    $controller = app()->make($value['controller']);
+    $controller = 'Techaxion\UserAccess\Controllers\\'.$value['controller'];
     $method = $value['method']!=''?$value['method']:'index';
     $request_method = explode(",",$value['route_type']);
-    $filter = json_decode($value['extra_options'],1);
+    $filter = json_decode($value['extra_options'],1)['filters']??'';
+    $filter = $filter != '' ? explode(",",$filter) : [];
     if (count($request_method) > 1) {
-        Route::match($request_method,$value['action'], [$controller, $method])->middleware($filter);
+        Route::match($request_method,$value['action'], [$controller, $method])->middleware($filter)->name(str_replace("/",".",$value['action']));
     }else{
         $request_method = $request_method[0];
-        Route::$request_method($value['action'], [$controller, $method])->middleware($filter);
+        Route::$request_method($value['action'], [$controller, $method])->middleware($filter)->name(str_replace("/",".",$value['action']));
     }
 }
-unset($dataAdmin,$value,$key);
 
-// Under Maintenance
-// $dataMaintenance = $dbConn->table('module_action')->where('status',2)->get()->toArray();
-// foreach ($dataMaintenance as $key => $value) {
-// 	$request_method = explode(",",$value['route_type']);
-// 	$filter = json_decode($value['extra_options'],1);
-// 	if (count($request_method) > 1) {
-// 		Route::match($request_method,$value['action'], [CommanController::class, 'set503'])->middleware($filter);
-// 	}else{
-// 		$request_method = $request_method[0];
-// 		Route::$request_method($value['action'], [CommanController::class, 'set503'])->middleware($filter);
-// 	}
-// }
-// unset($dataMaintenance,$value,$key);
+unset($dataAdmin, $value, $key);
