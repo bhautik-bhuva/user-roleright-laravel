@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('right_action', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->integer('roll_id');
+            $table->integer('role_id');
             $table->integer('action_id');
         });
     }

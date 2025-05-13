@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('role_action', function (Blueprint $table) {
+        Schema::create('roles', function (Blueprint $table) {
             $table->id();
-            $table->integer('role_id')->unsigned();
-            $table->integer('action_id')->unsigned();
+            $table->string('name', 50);
+            $table->enum('access', ['All', 'Excluded', 'Selected', 'None']);
+            $table->enum('access_for', ['All', 'Super Admin', 'Admin']);
+            $table->string('description', 255)->nullable();
+            $table->timestamps();
             $table->primary('id');
         });
     }
@@ -24,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('role_action');
+        Schema::dropIfExists('roles');
     }
 };

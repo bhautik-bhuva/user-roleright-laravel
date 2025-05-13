@@ -14,22 +14,22 @@ class UserAccessServiceProvider extends ServiceProvider
     {
         // Or for your custom command
         Artisan::call('useraccess:install');
-        
-        // load routes
-        $this->loadRoutesFrom(__DIR__.'/routes/DynamicRoutes.php');
     }
     
     public function register()
     {
         // Load migrations directly from the package (no need to publish)
-        $this->loadMigrationsFrom(__DIR__.'/database/migrations');
+        $this->loadMigrationsFrom(__DIR__.'/database/migrations'); 
+        
+        // load routes
+        $this->publishes([
+            __DIR__.'/routes/DynamicRoutes.php' => base_path('routes/UserAccessDynamicRoutes.php'),
+        ], 'useraccess-routes');
 
-        // load controllers
-        $this->app->make(Controllers\RoleController::class);
-        $this->app->make(Controllers\RightController::class);
+        $this->loadViewsFrom(base_path().'/resources/views/admin/layouts', 'laravelMain');
 
-        // load middleware
-        $this->app['router']->aliasMiddleware('admin', \Techaxion\UserAccess\Middleware\AdminGuardMiddleware::class);
+        // Load views from the package
+        $this->loadViewsFrom(__DIR__.'/views', 'useraccess');
 
         // Register any application services if needed
         // For example, you can bind interfaces to implementations here

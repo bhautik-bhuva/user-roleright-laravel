@@ -1,0 +1,19 @@
+<?php
+
+namespace Techaxion\UserAccess\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class RolesAction extends Model
+{
+    use HasFactory;
+
+    protected $table = 'role_action';
+
+    protected $fillable = [
+        'role_id',
+        'action_id'
+    ];
+
+}

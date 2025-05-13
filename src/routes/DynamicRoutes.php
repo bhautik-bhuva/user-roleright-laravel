@@ -5,6 +5,7 @@ namespace Techaxion\UserAccess\Routes;
 use Illuminate\Support\Facades\Route;
 use Techaxion\UserAccess\Controllers\RoleController;
 use Techaxion\UserAccess\Controllers\RightController;
+use Illuminate\Support\Facades\Session;
 
 $connection = env('DB_CONNECTION');
 $dbConn = \DB::connection($connection);
@@ -17,7 +18,8 @@ foreach ($dataAdmin as $key => $value) {
     $method = $value['method']!=''?$value['method']:'index';
     $request_method = explode(",",$value['route_type']);
     $filter = json_decode($value['extra_options'],1)['filters']??'';
-    $filter = $filter != '' ? explode(",",$filter) : [];
+    $filter = $filter != '' ? explode(",",str_replace(" ","",$filter)) : [];
+    
     if (count($request_method) > 1) {
         Route::match($request_method,$value['action'], [$controller, $method])->middleware($filter)->name(str_replace("/",".",$value['action']));
     }else{
