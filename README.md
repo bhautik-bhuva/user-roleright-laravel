@@ -12,7 +12,7 @@ User Role and Right Management With Route
 ## Installation
 
 ```bash
-composer require your-vendor/user-roleright-laravel
+composer require techaxion/user-roleright-laravel
 ```
 
     * Checks if the 'module_action' table exists to prevent reinstallation.
