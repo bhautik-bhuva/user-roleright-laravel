@@ -1,19 +1,21 @@
 <?php
 
 namespace Techaxion\UserAccess\Controllers;
-// session_start();
+
 use App\Http\Controllers\Controller;
 use Techaxion\UserAccess\Models\Roles;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Crypt;
+use Techaxion\UserAccess\Models\ModuleAction;
 
 class RoleController extends Controller
 {
     public function add(Request $request)
     {
-
-        return view('useraccess::roles.create');
+        $moduleAction = new ModuleAction();
+        $dataAdmin = $moduleAction->getAllActions();
+        return view('useraccess::roles.create', ['allRoutes' => $dataAdmin]);
     }
 
     public function edit(Request $request, $id)
