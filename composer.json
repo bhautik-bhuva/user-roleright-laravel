@@ -1,32 +1,32 @@
 {
-	"name": "techaxion/user-roleright-laravel",
-	"description": "User Role and Right Management With Route",
-	"version": "v1.0.23",
-	"license": "MIT",
-	"autoload": {
-		"psr-4": {
-			"Techaxion\\UserAccess\\": "src/"
-		}
-	},
-	"extra": {
-		"laravel": {
-			"providers": [
-				"Techaxion\\UserAccess\\UserAccessServiceProvider"
-			]
-		}
-	},
-	"authors": [
-		{
-			"name": "Bhargav Bhuva",
-			"email": "bhargav.bhuva@techaxion.com"
-		}
-	],
-	"support": {
-		"email": "bhargav.bhuva@techaxion.com",
-		"source": "https://github.com/bhautik-bhuva/user-roleright-laravel"
-	},
-	"require": {
-		"php": "^8.2",
-		"laravel/framework": "^12.0"
-	}
+  "name": "techaxion/user-roleright-laravel",
+  "description": "User Role and Right Management With Route",
+  "version": "v1.0.24",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Techaxion\\UserAccess\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Techaxion\\UserAccess\\UserAccessServiceProvider"
+      ]
+    }
+  },
+  "authors": [
+    {
+      "name": "Bhargav Bhuva",
+      "email": "bhargav.bhuva@techaxion.com"
+    }
+  ],
+  "support": {
+    "email": "bhargav.bhuva@techaxion.com",
+    "source": "https://github.com/bhautik-bhuva/user-roleright-laravel"
+  },
+  "require": {
+    "php": "^8.2",
+    "laravel/framework": "^12.0"
+  }
 }
