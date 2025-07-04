@@ -33,6 +33,12 @@ class RemovePackageCommand extends Command
                 $this->error('Could not open routes/web.php for writing.');
             }
         }
+        if (file_exists(base_path('config/useraccess.php'))) {
+            unlink(base_path('config/useraccess.php'));
+            $this->info('Configuration file removed.');
+        } else {
+            $this->warn('Configuration file does not exist.');
+        }
 
         $handle = fopen(base_path('composer.json'), 'r');
         $composerJson = json_decode(fread($handle, filesize('composer.json')), true);

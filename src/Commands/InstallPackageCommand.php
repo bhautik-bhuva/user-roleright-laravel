@@ -17,8 +17,28 @@ class InstallPackageCommand extends Command
 
     public function handle()
     {
-        $this->info('Running package installation...');
-       
+        $this->info('🔧 Running UserAccess package installation...');
+
+        // Step 1: Ask for user input
+        $userTable = $this->ask("👉 Enter your user table name", 'users');
+        $layoutPath = $this->ask("📁 Enter your layout Blade view path (e.g., resource/views/layouts.blade.php)", 'layouts.blade.php');
+        $yieldSection = $this->ask("📦 Enter the @yield('your_section_name') section name in your main layout (e.g., content)", 'content');
+
+        // Step 2: Write to config/useraccess.php
+        $configContent = <<<PHP
+        <?php
+
+        return [
+            'user_table' => '$userTable',
+            'layout_path' => '$layoutPath',
+            'yield_container' => '$yieldSection',
+        ];
+        PHP;
+
+        $configPath = config_path('useraccess.php');
+        File::put($configPath, $configContent);
+        $this->info('✅ Configuration saved to config/useraccess.php');
+
         // Check if the package is already installed
         if ($this->laravel['db']->getSchemaBuilder()->hasTable('module_action')) {
             $this->error('Package is already installed.');
@@ -38,24 +58,25 @@ class InstallPackageCommand extends Command
         // Other tasks (e.g., seeding, publishing configs)
         $this->call('vendor:publish', ['--provider' => "Techaxion\\UserAccess\\UserAccessServiceProvider"]);
 
-        $handle = fopen(base_path('routes/web.php'), 'a');
-        if ($handle) {
-            fwrite($handle, "\n// UserAccess Dynamic Routes\n");
-            fwrite($handle, "require __DIR__.'/UserAccessDynamicRoutes.php';\n");
-            fclose($handle);
+        // Step 8: Add route to web.php
+        $webPath = base_path('routes/web.php');
+        if (File::exists($webPath) && strpos(File::get($webPath), 'UserAccessDynamicRoutes.php') === false) {
+            File::append($webPath, "\n// UserAccess Dynamic Routes\nrequire __DIR__.'/UserAccessDynamicRoutes.php';\n");
+            $this->info('✅ Route added to routes/web.php');
         } else {
-            $this->error('Could not open routes/web.php for writing.');
+            $this->warn('⚠️ routes/web.php already contains the dynamic route or could not be modified.');
         }
 
-        $handle = fopen(base_path('composer.json'), 'r');
-        $composerJson = json_decode(fread($handle, filesize('composer.json')), true);
+        // Step 9: Add uninstall script to composer.json
+        $composerPath = base_path('composer.json');
+        $composerJson = json_decode(file_get_contents($composerPath), true);
         $composerJson['scripts']['remove-useraccess'] = [
-			"@php artisan useraccess:remove",
-			"composer remove techaxion/user-roleright-laravel"
-		];
-        $handle = fopen(base_path('composer.json'), 'w');
-        fwrite($handle, json_encode($composerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-        fclose($handle);
-        $this->info('Package installation complete!');
+            "@php artisan useraccess:remove",
+            "composer remove techaxion/user-roleright-laravel"
+        ];
+        file_put_contents($composerPath, json_encode($composerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+        $this->info('✅ Added remove-useraccess script to composer.json');
+
+        $this->info('🎉 Package installation complete!');
     }
 }
