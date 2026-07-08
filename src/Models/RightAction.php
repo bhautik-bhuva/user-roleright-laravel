@@ -17,5 +17,7 @@ class RightAction extends Model
         'role_id',
         'action_id'
     ];
-
+    public function deleteRightActions($user_id, $role_id) {
+        return self::where("user_id",$user_id)->where("role_id",$role_id)->delete();
+    }
 }

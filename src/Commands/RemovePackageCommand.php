@@ -19,7 +19,7 @@ class RemovePackageCommand extends Command
         $this->info('Running package removal...');
 
         // Run migrations
-        $this->call('migrate:reset', ['--path' => 'vendor/techaxion/user-roleright-laravel/src/database/migrations', '--force' => true]);
+        $this->call('migrate:reset', ['--path' => 'vendor/techaxion/user-roleright-laravel/src/Database/Migrations', '--force' => true]);
 
         if (file_exists(base_path('routes/UserAccessDynamicRoutes.php'))) {
             $fileContent = file_get_contents(base_path('routes/web.php'));
@@ -33,6 +33,7 @@ class RemovePackageCommand extends Command
                 $this->error('Could not open routes/web.php for writing.');
             }
         }
+        
         if (file_exists(base_path('config/useraccess.php'))) {
             unlink(base_path('config/useraccess.php'));
             $this->info('Configuration file removed.');
@@ -40,12 +41,21 @@ class RemovePackageCommand extends Command
             $this->warn('Configuration file does not exist.');
         }
 
+        // Remove the package's assets
+        $assetsPath = public_path('assets/vendor/useraccess');
+        if (\File::exists($assetsPath)) {
+            \File::deleteDirectory($assetsPath, true);
+            // rmdir($assetsPath);
+        }
+
         $handle = fopen(base_path('composer.json'), 'r');
         $composerJson = json_decode(fread($handle, filesize('composer.json')), true);
         unset($composerJson['scripts']['remove-useraccess']);
+        unset($composerJson['scripts']['update-useraccess']);
         $handle = fopen(base_path('composer.json'), 'w');
         fwrite($handle, json_encode($composerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
         fclose($handle);
+        $this->info('✅ removed remove-useraccess and update-useraccess script to composer.json');
 
         $this->info('Package removal complete!');
     }

@@ -15,5 +15,7 @@ class RolesAction extends Model
         'role_id',
         'action_id'
     ];
-
+    public function deleteRoleActions($role_id) {
+        return self::where("role_id",$role_id)->delete();
+    }
 }

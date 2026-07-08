@@ -5,13 +5,13 @@ namespace Techaxion\UserAccess\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-
+use App\Models\User;
 class RightController extends Controller
 {
-    public function listRight(Request $request)
+    public function userlist(Request $request)
     {
-        // Your logic to list rights
-        return response()->json(['message' => 'List of rights']);
+        $users = User::all();
+        return view('useraccess::right.userlist', compact('users'));
     }
 
     public function registeredModules(Request $request)
