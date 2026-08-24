@@ -1,7 +1,9 @@
 @extends('laravelMain::' . $layout_file)
 @section('title', 'Edit User')
 @push('styles')
-    <link href="{{asset('assets/vendor/useraccess/hierarchical/hierarchical-checkboxes.css')}}" rel="stylesheet" type="text/css" id="skinSheet">
+    <style>
+            {!! file_get_contents(base_path() . '/vendor/techaxion/user-roleright-laravel/src/assets/hierarchical/hierarchical-tailwind.css') !!}
+    </style>
     <style>
         .hierarchy-checkboxes label {
             display: inline-block;
@@ -77,7 +79,7 @@
                     <div class="hierarchy-checkboxes" rel="test">
                         <input class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 hierarchy-root-checkbox" type="checkbox" name="selNodes_all[]" id="all" value="All">
                         <label class="hierarchy-root-label text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">All Permissions</label>
-                        <div class="hierarchy-root-child hierarchy-node space-y-2 mt-2 pl-4" style="width:95%">
+                        <div class="hierarchy-root-child hierarchy-node mt-2" style="width:95%">
                             @php $i= 0; @endphp
                             @foreach ($allRoutes as $k => $v)
                                 <div class="hierarchy-node middle_node_{{ $i }} border-l-2 border-gray-100 dark:border-gray-750 pl-4 py-1">
@@ -110,7 +112,9 @@
 @endsection
 @push('scripts')
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="{{asset('assets/vendor/useraccess/hierarchical/hierarchical-checkboxes.js')}}"></script>
+<script>
+    {!! file_get_contents(dirname(__DIR__,3).'/vendor/techaxion/user-roleright-laravel/src/assets/hierarchical/hierarchical-checkboxes.js') !!}
+</script>
 <script>
     $(document).ready(function() {
         setTimeout(function() {

@@ -33,7 +33,7 @@
                 <tr>
                     <td><?php echo $role['id']; ?> </td>
                     <td><?php echo $role['name']; ?></td>
-                    <td><?php echo $role['access_for']['name']; ?></td>
+                    <td><?php echo implode(", ",$role['interface_access']); ?></td>
                     <td><?php echo $role['access']; ?></td>
 
                     <td>

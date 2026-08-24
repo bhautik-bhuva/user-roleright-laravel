@@ -46,7 +46,7 @@
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors">
                             <td class="px-4 py-3 whitespace-nowrap"><?php echo $role['id']; ?> </td>
                             <td class="px-4 py-3 whitespace-nowrap font-medium text-gray-900 dark:text-gray-100"><?php echo $role['name']; ?></td>
-                            <td class="px-4 py-3 whitespace-nowrap"><?php echo $role['access_for']['name']; ?></td>
+                            <td class="px-4 py-3 whitespace-nowrap"><?php echo implode(", ",$role['interface_access']); ?></td>
                             <td class="px-4 py-3 whitespace-nowrap uppercase text-xs font-semibold"><?php echo $role['access']; ?></td>
                             <td class="px-4 py-3 whitespace-nowrap">
                                 @if (Route::has('useraccess.role.edit') && Route::has('useraccess.role.update'))

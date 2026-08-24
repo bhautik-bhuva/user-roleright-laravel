@@ -5,7 +5,7 @@ namespace Techaxion\UserAccess\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Techaxion\UserAccess\Models\AccessFor;
+use Techaxion\UserAccess\Models\InterfaceAccess;
 use Techaxion\UserAccess\Models\RolesAction;
 class Roles extends Model
 {
@@ -16,13 +16,14 @@ class Roles extends Model
     protected $fillable = [
         'name',
         'access',
-        'access_for',
+        'interface_access',
         'description',
         'created_at',
         'updated_at',
-    ];
-    public function access_for(){
-        return $this->hasOne(AccessFor::class, 'id', 'access_for');
+    ]; 
+    public function getInterfaceAccessNamesAttribute() {
+        $ids = is_array($this->interface_access) ? $this->interface_access : explode(',', $this->interface_access);
+        return InterfaceAccess::whereIn('id', $ids)->pluck('name')->toArray();
     }
     // get all actions for the role
     public function actions() {

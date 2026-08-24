@@ -7,7 +7,7 @@
 
 @section('content')
 @if(session('success'))
-<div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-md" role="alert">{{ session('success') }}</div>
+<div class="my-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-md" role="alert">{{ session('success') }}</div>
 @endif
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -95,6 +95,9 @@
             <div>
                 <h5 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-2">Useraccess plugin Links</h5>
                 <div class="flex flex-wrap gap-2">
+                    @if (Route::has('useraccess.interface-access.list'))
+                    <a class="px-3 py-1.5 bg-indigo-600 text-white rounded-md text-xs hover:bg-indigo-700 transition" href="{{ route('useraccess.interface-access.list') }}">Access For</a>
+                    @endif
                     @if (Route::has('useraccess.menu.list'))
                     <a class="px-3 py-1.5 bg-indigo-600 text-white rounded-md text-xs hover:bg-indigo-700 transition" href="{{ route('useraccess.menu.list') }}">Menu</a>
                     @endif
@@ -127,8 +130,8 @@
         <h4 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Available Commands</h4>
         <hr class="border-gray-200 dark:border-gray-700 mb-4">
         <ul class="divide-y divide-gray-200 dark:divide-gray-700 text-sm text-gray-600 dark:text-gray-400">
-            <li class="py-3"><code class="bg-gray-100 dark:bg-gray-700 px-1 py-0.5 rounded text-indigo-600 dark:text-indigo-400">composer update techaxion/user-roleright-laravel</code> - To update package</li>
-            <li class="py-3"><code class="bg-gray-100 dark:bg-gray-700 px-1 py-0.5 rounded text-indigo-600 dark:text-indigo-400">composer run remove-useraccess</code> / <code class="bg-gray-100 dark:bg-gray-700 px-1 py-0.5 rounded text-indigo-600 dark:text-indigo-400">php artisan useraccess:remove</code> - To remove package from project</li>
+            <li class="py-3"><p class="mb-3">- To update package</p><code class="bg-gray-100 dark:bg-gray-700 px-1 py-0.5 rounded text-indigo-600 dark:text-indigo-400">composer update techaxion/user-roleright-laravel</code> </li>
+            <li class="py-3"><p class="mb-3">- To remove package from project</p><code class="bg-gray-100 dark:bg-gray-700 px-1 py-0.5 rounded text-indigo-600 dark:text-indigo-400 mb-3">composer run remove-useraccess</code> or <br><code class="bg-gray-100 dark:bg-gray-700 px-1 py-0.5 rounded text-indigo-600 dark:text-indigo-400">php artisan useraccess:remove</code></li>
         </ul>
     </div>
 </div>

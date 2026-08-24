@@ -22,6 +22,7 @@ class ModuleActionDataSeeder extends Seeder
             ['name' => 'Store Role', 'controller' => $controller.'RoleController', 'method' => 'store', 'action' => '/role/store', 'route_type' => 'post', 'menu_type' => '1,2,3', 'menu_label' => 'Store Role', 'menu_status' => '0', 'menu_sequence' => 1, 'menu_order' => 2, 'menu_icon' => '', 'module_label' => 'Role Management', 'status' => 1, 'created_date' => date('Y-m-d h:i:s'), 'extra_options' => '{"filters":"auth","route_name":"useraccess.role.store", "prefix":"useraccess"}'],
             ['name' => 'Edit Role', 'controller' => $controller.'RoleController', 'method' => 'edit', 'action' => '/role/edit/{role}', 'route_type' => 'get', 'menu_type' => '1,2,3', 'menu_label' => 'Edit Role', 'menu_status' => '0', 'menu_sequence' => 1, 'menu_order' => 3, 'menu_icon' => '', 'module_label' => 'Role Management', 'status' => 1, 'created_date' => date('Y-m-d h:i:s'), 'extra_options' => '{"filters":"auth","route_name":"useraccess.role.edit", "prefix":"useraccess"}'],
             ['name' => 'Update Role', 'controller' => $controller.'RoleController', 'method' => 'update', 'action' => '/role/update/{role}', 'route_type' => 'put', 'menu_type' => '1,2,3', 'menu_label' => 'Update Role', 'menu_status' => '0', 'menu_sequence' => 1, 'menu_order' => 4, 'menu_icon' => '', 'module_label' => 'Role Management', 'status' => 1, 'created_date' => date('Y-m-d h:i:s'), 'extra_options' => '{"filters":"auth","route_name":"useraccess.role.update", "prefix":"useraccess"}'],
+            ['name' => 'Get permissions', 'controller' => $controller.'RoleController', 'method' => 'permissions', 'action' => '/role/permissions', 'route_type' => 'get', 'menu_type' => '1,2,3', 'menu_label' => 'Get permissions', 'menu_status' => '0', 'menu_sequence' => 1, 'menu_order' => 5, 'menu_icon' => '', 'module_label' => 'Role Management', 'status' => 1, 'created_date' => date('Y-m-d h:i:s'), 'extra_options' => '{"filters":"auth","route_name":"useraccess.role.permissions", "prefix":"useraccess"}'],
         ]);
         // User & Rights
         DB::table('module_action')->insert([
@@ -50,13 +51,22 @@ class ModuleActionDataSeeder extends Seeder
             ['name' => 'Update Useraccess Setting', 'controller' => $controller.'SettingController', 'method' => 'updatesetting', 'action' => '/update/setting', 'route_type' => 'put', 'menu_type' => '1,2,3', 'menu_label' => 'Update Useraccess Setting', 'menu_status' => '0', 'menu_sequence' => 4, 'menu_order' => 3, 'menu_icon' => '', 'module_label' => 'Useraccess Setting', 'status' => 1, 'created_date' => date('Y-m-d h:i:s'), 'extra_options' => '{"filters":"auth","route_name":"useraccess.update.setting", "prefix":"useraccess"}']
         ]);
 
+        // Access type management
+        DB::table('module_action')->insert([
+            ['name' => 'Access Type List', 'controller' => $controller.'InterfaceAccessController', 'method' => 'list', 'action' => '/interface-access/list', 'route_type' => 'get', 'menu_type' => '1,2,3', 'menu_label' => 'Access Types', 'menu_status' => '1', 'menu_sequence' => 0, 'menu_order' => 0, 'menu_icon' => 'fas fa-key me-2', 'module_label' => 'Access Type Management', 'status' => 1, 'created_date' => date('Y-m-d h:i:s'), 'extra_options' => '{"filters":"auth","route_name":"useraccess.interface-access.list", "prefix":"useraccess"}'],
+            ['name' => 'Create Access Type', 'controller' => $controller.'InterfaceAccessController', 'method' => 'create', 'action' => '/interface-access/create', 'route_type' => 'get', 'menu_type' => '1,2,3', 'menu_label' => 'Create Access Type', 'menu_status' => '1', 'menu_sequence' => 0, 'menu_order' => 1, 'menu_icon' => '', 'module_label' => 'Access Type Management', 'status' => 1, 'created_date' => date('Y-m-d h:i:s'), 'extra_options' => '{"filters":"auth","route_name":"useraccess.interface-access.create", "prefix":"useraccess"}'],
+            ['name' => 'Store Access Type', 'controller' => $controller.'InterfaceAccessController', 'method' => 'store', 'action' => '/interface-access/store', 'route_type' => 'post', 'menu_type' => '1,2,3', 'menu_label' => 'Store Access Type', 'menu_status' => '0', 'menu_sequence' => 0, 'menu_order' => 2, 'menu_icon' => '', 'module_label' => 'Access Type Management', 'status' => 1, 'created_date' => date('Y-m-d h:i:s'), 'extra_options' => '{"filters":"auth","route_name":"useraccess.interface-access.store", "prefix":"useraccess"}'],
+            ['name' => 'Edit Access Type', 'controller' => $controller.'InterfaceAccessController', 'method' => 'edit', 'action' => '/interface-access/edit/{accessFor}', 'route_type' => 'get', 'menu_type' => '1,2,3', 'menu_label' => 'Edit Access Type', 'menu_status' => '0', 'menu_sequence' => 0, 'menu_order' => 3, 'menu_icon' => '', 'module_label' => 'Access Type Management', 'status' => 1, 'created_date' => date('Y-m-d h:i:s'), 'extra_options' => '{"filters":"auth","route_name":"useraccess.interface-access.edit", "prefix":"useraccess"}'],
+            ['name' => 'Update Access Type', 'controller' => $controller.'InterfaceAccessController', 'method' => 'update', 'action' => '/interface-access/update/{accessFor}', 'route_type' => 'put', 'menu_type' => '1,2,3', 'menu_label' => 'Update Access Type', 'menu_status' => '0', 'menu_sequence' => 0, 'menu_order' => 4, 'menu_icon' => '', 'module_label' => 'Access Type Management', 'status' => 1, 'created_date' => date('Y-m-d h:i:s'), 'extra_options' => '{"filters":"auth","route_name":"useraccess.interface-access.update", "prefix":"useraccess"}'],
+            ['name' => 'Delete Access Type', 'controller' => $controller.'InterfaceAccessController', 'method' => 'delete', 'action' => '/interface-access/delete/{accessFor}', 'route_type' => 'delete', 'menu_type' => '1,2,3', 'menu_label' => 'Delete Access Type', 'menu_status' => '0', 'menu_sequence' => 0, 'menu_order' => 5, 'menu_icon' => '', 'module_label' => 'Access Type Management', 'status' => 1, 'created_date' => date('Y-m-d h:i:s'), 'extra_options' => '{"filters":"auth","route_name":"useraccess.interface-access.delete", "prefix":"useraccess"}'],
+        ]);
         // Access for
-        DB::table('access_for')->insert([
-            ['name' => 'All','route_type' => 'resource,post,get,put,patch,delete'],
-            ['name' => 'Super Admin','route_type' => 'resource,post,get,put,patch,delete'],
-            ['name' => 'Admin','route_type' => 'resource,post,get,put,patch'],
-            ['name' => 'Guest','route_type' => 'get'],
-            ['name' => 'None','route_type' => '']
+        DB::table('interface_access')->insert([
+            ['name' => 'All','access_type' => 'frontend,backend'],
+            ['name' => 'Super Admin','access_type' => 'frontend,backend'],
+            ['name' => 'Admin','access_type' => 'frontend,backend'],
+            ['name' => 'Guest','access_type' => 'backend'],
+            ['name' => 'None','access_type' => 'backend']
         ]);
     }
 }

@@ -15,9 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name', 50);
             $table->enum('access', ['All', 'Excluded', 'Selected', 'None']);
-            $table->enum('access_for', ['All', 'Super Admin', 'Admin']);
+            $table->text('interface_access');
             $table->string('description', 255)->nullable();
-            $table->timestamps();
+            $table->dateTime('created_at')->useCurrent();
+            $table->dateTime('updated_at')->nullable();
             $table->primary('id');
         });
     }

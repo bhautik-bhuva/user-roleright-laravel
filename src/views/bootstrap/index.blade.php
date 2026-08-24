@@ -101,6 +101,9 @@
                 <hr>
                 <div>
                     <h4>Useraccess plugin Links</h4>
+                    @if (Route::has('useraccess.interface-access.list'))
+                    <a class="btn btn-primary btn-sm mb-0" href="{{ route('useraccess.interface-access.list') }}">Access For</a>
+                    @endif
                     @if (Route::has('useraccess.menu.list'))
                     <a class="btn btn-primary btn-sm mb-0" href="{{ route('useraccess.menu.list') }}">Menu</a>
                     @endif
@@ -138,6 +141,35 @@
                     <li class="list-group-item px-0"><code class="p-0">composer update techaxion/user-roleright-laravel</code> - To update package</li>
                     <li class="list-group-item px-0"><code class="p-0">composer run remove-useraccess</code>/<code>php artisan useraccess:remove</code> - To remove package from project</li>
                 </ul>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card mt-1">
+            <div class="card-body">
+                <h4>Replace Code in Layout File (Ex. resources/views/layouts/app.blade.php)</h4>
+                <hr>
+                <span>Replace Code,</span>
+                <code class="p-0">
+                    <main>
+                        @{{ $slot }} 
+                    <main>
+                </code>
+                <span>With below code</span>
+                <code class="p-0">
+                    <main>
+                        @@if (request()->is('useraccess/*') || request()->is('useraccess'))
+                            <div class="container mx-auto">
+                                @@yield('content')
+                            </div>
+                        @@else
+                            <div class="container mx-auto">
+                                @{{ $slot }} 
+                            </div>
+                        @@endif
+                    <main>
+                </code>
+                
             </div>
         </div>
     </div>

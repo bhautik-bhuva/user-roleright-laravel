@@ -5,7 +5,7 @@ namespace Techaxion\UserAccess\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Techaxion\UserAccess\Models\AccessFor;
+use Techaxion\UserAccess\Models\InterfaceAccess;
 use Illuminate\Support\Facades\Auth;
 use Techaxion\UserAccess\Models\Roles;
 use Techaxion\UserAccess\Models\UserRoleMapping;
@@ -22,7 +22,7 @@ class ModuleAction extends Model
         $user = Auth::user();
         $userRoleMapping = new UserRoleMapping();
         $role_id = $userRoleMapping->getUserRole($user->id);
-        $menu_typeArray = Roles::where('id', $role_id)->pluck('access_for')->toArray();
+        $menu_typeArray = Roles::where('id', $role_id)->pluck('interface_access')->toArray();
 
         $dataAdmin = ModuleAction::where('status',1)
         ->where(function ($query) use ($menu_typeArray) {
@@ -39,7 +39,7 @@ class ModuleAction extends Model
         }
         return $newArray;
     }
-    public function access_for(){
-        return $this->hasMany(AccessFor::class, 'id', 'menu_type');
+    public function interface_access(){
+        return $this->hasMany(InterfaceAccess::class, 'id', 'menu_type');
     }
 }

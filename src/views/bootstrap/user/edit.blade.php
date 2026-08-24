@@ -2,8 +2,9 @@
 @section('title', 'Edit User')
 @push('styles')
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="{{asset('assets/vendor/useraccess/hierarchical/hierarchical-checkboxes.css')}}" rel="stylesheet" type="text/css" id="skinSheet">
-
+<style>
+    {!! file_get_contents(base_path() . '/vendor/techaxion/user-roleright-laravel/src/assets/hierarchical/hierarchical-bootstrap.css') !!}
+</style>
 <!-- <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css"> -->
 @endpush
 @section('content')
@@ -87,8 +88,8 @@
         <div class="d-flex justify-content-between align-items-center my-3">
             <h4 class="mb-0">Assign Permissions</h5>
         </div>
-        <div class="card mb-30" id="roleAccesstree" style="height:600px; overflow-y: scroll;">
-            <div class="card-body">
+        <div class="card mb-30" >
+            <div class="card-body" id="roleAccesstree" style="height:600px; overflow-y: scroll;">
                 <div class="row-fluid" id="accrss_tree">
                     <div class="hierarchy-checkboxes" rel="test">
                         <input class="hierarchy-root-checkbox" type="checkbox" name="selNodes_all[]" id="all" value="All">
@@ -128,7 +129,9 @@
 
 @push('scripts')
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="{{asset('assets/vendor/useraccess/hierarchical/hierarchical-checkboxes.js')}}"></script>
+<script>
+    {!! file_get_contents(dirname(__DIR__,3).'/vendor/techaxion/user-roleright-laravel/src/assets/hierarchical/hierarchical-checkboxes.js') !!}
+</script>
 <script>
     $(document).ready(function() {
         setTimeout(function() {

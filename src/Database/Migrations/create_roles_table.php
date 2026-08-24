@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name', 50);
             $table->enum('access', ['All', 'Excluded', 'Selected', 'None']);
-            $table->integer('access_for');
+            $table->text('interface_access');
             $table->string('description', 255)->nullable();
             $table->dateTime('created_at')->useCurrent();
             $table->dateTime('updated_at')->nullable();

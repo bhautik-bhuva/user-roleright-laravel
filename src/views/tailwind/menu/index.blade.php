@@ -22,7 +22,7 @@
     <div class="flex justify-between items-center mb-6">
         <h4 class="text-xl font-bold text-gray-900 dark:text-gray-100">Menu Management</h4>
         @if (Route::has('useraccess.menu.create') && Route::has('useraccess.menu.store'))
-        <a href="{{ route('useraccess.menu.create') }}" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-sm transition font-medium">Create Menu</a>
+            <a href="{{ route('useraccess.menu.create') }}" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-sm transition font-medium">Create Menu</a>
         @endif
     </div>
 

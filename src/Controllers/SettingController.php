@@ -30,7 +30,7 @@ class SettingController extends Controller
         }else{
             $role_id = $role_id[0];
         }
-        $menu_type = Roles::where('id', $role_id)->pluck('access_for')->toArray();
+        $menu_type = Roles::where('id', $role_id)->pluck('interface_access')->toArray();
         $menu_type = implode(",",$menu_type );
         $menu_list = $this->menuSP("All",$menu_type, $role_id, $user_id, '1,0');
         return response()->json($menu_list);
@@ -128,7 +128,7 @@ class SettingController extends Controller
                         'method' => $method,
                         'action' => "/" . preg_replace('/^' . preg_quote($prefix, '/') . '\//', '', $route['uri']),
                         'route_type' => count($methods) > 0 ? strtolower(implode(",", $methods)) : '',
-                        'menu_type' => "2",
+                        'menu_type' => "1,2",
                         'menu_label' => ucwords(str_replace('admin', '', str_replace('index', '', str_replace('.', ' ', $route['name']))) ),
                         'menu_status' => $menu_status,
                         'menu_sequence' => $menu_sequence_i,
@@ -143,7 +143,7 @@ class SettingController extends Controller
                         'name' => $name,
                         'action' => "/" . preg_replace('/^' . preg_quote($prefix, '/') . '\//', '', $route['uri']),
                         'route_type' => count($methods) > 0 ? strtolower(implode(",", $methods)) : '',
-                        'menu_type' => "2",
+                        'menu_type' => "1,2",
                         'menu_label' => ucwords(str_replace('admin', '', str_replace('index', '', str_replace('.', ' ', $route['name']))) ),
                         'menu_status' => $menu_status,
                         'menu_sequence' => $menu_sequence_i,
@@ -202,7 +202,7 @@ class SettingController extends Controller
         }else{
             $role_id = $role_id[0];
         }
-        $menu_type = Roles::where('id', $role_id)->pluck('access_for')->toArray();
+        $menu_type = Roles::where('id', $role_id)->pluck('interface_access')->toArray();
         $menu_type = implode(",",$menu_type );
 
         $menu_list = $this->menuSP("All",$menu_type, $role_id, $user_id, "1");

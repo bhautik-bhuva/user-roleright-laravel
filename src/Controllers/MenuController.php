@@ -6,14 +6,8 @@ use Techaxion\UserAccess\Models\ModuleAction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
-use ReflectionClass;
-use Techaxion\UserAccess\Models\AccessFor;
-use Illuminate\Support\Facades\Auth;
-use Techaxion\UserAccess\Models\UserRoleMapping;
-use Techaxion\UserAccess\Models\Roles;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Route;
-use Techaxion\UserAccess\Models\RolesAction;
+ 
+use Techaxion\UserAccess\Models\InterfaceAccess;
 
 class MenuController extends Controller{
     private $useraccessData;
@@ -25,7 +19,7 @@ class MenuController extends Controller{
             return !Str::contains($item->controller, 'Techaxion\\UserAccess') ;
         })->map(function ($menu) {
             $accessIds = explode(',', $menu->menu_type);
-            $menu->access_types = AccessFor::whereIn('id', $accessIds)->pluck('name')->toArray();
+            $menu->access_types = InterfaceAccess::whereIn('id', $accessIds)->pluck('name')->toArray();
             return $menu;
         });
 
@@ -35,7 +29,7 @@ class MenuController extends Controller{
     public function create(Request $request){
         $data['controllers'] = $this->controllersName();
 		$data['menuOrder'] = ModuleAction::where('menu_status','1')->orderBy('menu_sequence', 'ASC')->get()->toArray();
-        $data['accessFor'] = AccessFor::all()->toArray();
+        $data['accessFor'] = InterfaceAccess::all()->toArray();
         $frontendView = $this->useraccessData['frontend'] == 'tailwind' ? 'useraccess::tailwind.menu.create' : 'useraccess::bootstrap.menu.create';
         return view($frontendView, compact('data'));
     }
@@ -152,7 +146,7 @@ class MenuController extends Controller{
 			}
 		}
 		$edit_methods = array_values($methodWithNumArgus);
-        $accessFor = AccessFor::all()->toArray();
+        $accessFor = InterfaceAccess::all()->toArray();
         $frontendView = $this->useraccessData['frontend'] == 'tailwind' ? 'useraccess::tailwind.menu.edit' : 'useraccess::bootstrap.menu.edit';
         return view($frontendView, compact('data','moduleAction','edit_methods','accessFor'));
     }

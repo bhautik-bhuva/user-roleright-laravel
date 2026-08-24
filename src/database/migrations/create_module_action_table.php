@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('method');
             $table->text('action');
             $table->set('route_type', ['post', 'get', 'put', 'patch', 'delete'])->comment('post,get,put,patch,delete');
-            $table->enum('menu_type', ['Admin', 'Admin Backend']);
+            $table->text('menu_type');
             $table->string('menu_label')->nullable();
             $table->enum('menu_status', ['0', '1'])->default('0');
             $table->integer('menu_sequence');

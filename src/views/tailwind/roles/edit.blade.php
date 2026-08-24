@@ -1,18 +1,22 @@
 @extends('laravelMain::' . $layout_file)
 @section('title', 'Edit Role')
 @push('styles')
-    <link href="{{asset('assets/vendor/useraccess/hierarchical/hierarchical-checkboxes.css')}}" rel="stylesheet" type="text/css" id="skinSheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
-        .hierarchy-checkboxes label {
-            display: inline-block;
-            margin-bottom: 0;
-            font-size: 0.875rem;
-            color: #374151;
+        {!! file_get_contents(base_path() . '/vendor/techaxion/user-roleright-laravel/src/assets/hierarchical/hierarchical-tailwind.css') !!}
+    </style>
+   
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <style>
+        .select2-container .select2-selection--multiple {
+            border-color: rgb(209, 213, 219);
+            border-radius: 0.375rem;
+            padding: 2px;
         }
-        .hierarchy-node {
-            margin-top: 0.25rem;
-            margin-bottom: 0.25rem;
+        .select2-container .select2-selection--multiple {
+            border-color: rgb(209, 213, 219);
+            border-radius: 0.375rem;
+            padding: 2px;
         }
     </style>
 @endpush
@@ -59,14 +63,19 @@
                     </div>
 
                     <div>
-                        <label for="access_for" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Access For</label>
-                        <select class="w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('access_for') border-red-500 @enderror" id="access_for" name="access_for">
-                            <option value="">Select Access For</option>
+                        <label for="interface_access" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Access For</label>
+                        @php 
+                            $selectedAccessFor = old('interface_access', explode(',', $role->interface_access ?? ''));
+                            if (!is_array($selectedAccessFor)) {
+                                $selectedAccessFor = explode(',', $selectedAccessFor);
+                            }
+                        @endphp
+                        <select class="w-full rounded-md border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error('interface_access') border-red-500 @enderror" multiple id="interface_access" name="interface_access[]">
                             @foreach ($accessFor as $k => $v)
-                                <option value="{{ $v['id'] }}" <?php echo (old('access_for', $role->access_for) == $v['id'] ) ? 'selected' : ''; ?> >{{ $v['name'] }}</option>
+                                <option value="{{ $v['id'] }}" <?php echo (in_array($v['id'], $selectedAccessFor)) ? 'selected' : ''; ?> >{{ $v['name'] }}</option>
                             @endforeach
                         </select>
-                        @error('access_for')
+                        @error('interface_access')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                         @enderror
                     </div>
@@ -87,34 +96,7 @@
             </div>
 
             <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm p-6 overflow-y-auto relative" id="roleAccesstree" style="height:600px;">
-                <div class="row-fluid" id="accrss_tree" >
-                    <div class="hierarchy-checkboxes" rel="test">
-                        <input class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 hierarchy-root-checkbox" type="checkbox" name="selNodes_all[]" id="all" value="All">
-                        <label class="hierarchy-root-label text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">All Permissions</label>
-                        <div class="hierarchy-root-child hierarchy-node space-y-2 mt-2 pl-4" style="width:95%">
-                            @php $i= 0; @endphp
-                            @foreach ($allRoutes as $k => $v)
-                                <div class="hierarchy-node middle_node_{{ $i }} border-l-2 border-gray-100 dark:border-gray-750 pl-4 py-1">
-                                    <input class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 hierarchy-checkbox" type="checkbox">
-                                    <label class="hierarchy-label text-sm font-semibold text-gray-800 dark:text-gray-200 ml-1">{{ $k }}</label>
-                                        @foreach ($v as $kk => $vv)
-                                            <div class="hierarchy-node leaf flex items-center pl-4" data-action-id="{{ $vv['id'] }}">
-                                                <input class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 hierarchy-checkbox middle_node_{{ $i }}" id="node_{{ $vv['id'] }}" type="checkbox" name="selNodes[]" value="{{ $vv['id'] }}" <?php echo (in_array($vv['id'], $roleActions))?'checked':''; ?>>
-                                                <label class="hierarchy-label text-xs ml-2 text-gray-600 dark:text-gray-400" >
-                                                    {{ $vv['menu_label'] }}
-                                                    {{ ($vv['menu_status'] == 1)?'(Admin Menu)':'' }}
-                                                    @php $extra_options_imvalue = json_decode($vv["extra_options"],1);
-                                                    $prefix_imvalue =  ($extra_options_imvalue["prefix"] ?? "") ? '/'.$extra_options_imvalue["prefix"] : ""; @endphp
-                                                    <span class='text-indigo-600 dark:text-indigo-400'> | URL => {{ $prefix_imvalue.$vv['action'] }}</span>
-                                                </label>
-                                            </div>
-                                        @endforeach
-                                </div>
-                                @php $i++; @endphp
-                            @endforeach
-                        </div>
-                    </div>
-                </div>
+                 
             </div>
 
         </form>
@@ -125,81 +107,46 @@
 @endsection
 @push('scripts')
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="{{asset('assets/vendor/useraccess/hierarchical/hierarchical-checkboxes.js')}}"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    {!! file_get_contents(dirname(__DIR__,3).'/vendor/techaxion/user-roleright-laravel/src/assets/hierarchical/hierarchical-checkboxes.js') !!}
+</script>
 <script>
     $(document).ready(function(){
+        $("#interface_access").change(function(){
+            fetchPermissions($(this).val());
+        });
+        $('#interface_access').select2({
+            placeholder: "Select Access For"
+        });
         setTimeout(function(){
             $('#roleAccesstree').append( $('.hierarchy-root-child') );
         }, 500);
-        const $thisNode = $('.expand-collapse-button').parent();
-
-        $('.expand-collapse-button').on('click', function() {
-            if ($thisNode.hasClass("child-expanded")) {
-                $('.hierarchy-root-child').css({left: '20px', top: '50px'});
-            } else {
-                $('.hierarchy-root-child').css({left: '0px', top: '0px'});
+        
+        $(document).on('click', '.expand-collapse-button', function () {
+            const $thisNode = $(this).parent();
+            if ($thisNode.hasClass('hierarchy-checkboxes')) {
+                if ($thisNode.hasClass("child-expanded")) {
+                    $('.hierarchy-root-child').css({left: '20px',top: '50px'});
+                } else { 
+                    $('.hierarchy-root-child').css({left: '0px', top: '0px' });
+                }
             }
         });
 
+        const $thisNode = $('.expand-collapse-button').parent();        
         if (!$thisNode.hasClass("child-expanded")) {
             $('.expand-collapse-button').trigger('click');
         }
-
-        var initialAccessFor = $('#access_for').val();
+        var initialAccessFor = $('#interface_access').val();
         if (initialAccessFor) {
             fetchPermissions(initialAccessFor);
         }
+
     });
-
-    function updatePermissionTree(actionIds) {
-        var ids = (actionIds || []).map(String);
-
-        $('.hierarchy-node.leaf').each(function() {
-            var actionId = $(this).data('action-id');
-            if (!actionId) {
-                return;
-            }
-            var show = ids.length === 0 || ids.includes(actionId.toString());
-            if (show) {
-                $(this).show();
-            } else {
-                $(this).hide().find('input[type=checkbox]').prop('checked', false);
-            }
-        });
-
-        $('.hierarchy-node').not('.leaf').each(function() {
-            var hasVisible = $(this).find('.hierarchy-node.leaf:visible').length > 0;
-            $(this).toggle(hasVisible);
-        });
-    }
-
-    function fetchPermissions(accessForId) {
-        if (!accessForId) {
-            updatePermissionTree([]);
-            return;
-        }
-
-        $.ajax({
-            url: "{{ url('/useraccess/role/permissions') }}",
-            method: 'GET',
-            data: { access_for: accessForId },
-            dataType: 'json',
-            success: function(response) {
-                var ids = [];
-                if (response.data) {
-                    $.each(response.data, function(module, actions) {
-                        $.each(actions, function(index, action) {
-                            ids.push(action.id.toString());
-                        });
-                    });
-                }
-                updatePermissionTree(ids);
-            },
-            error: function() {
-                updatePermissionTree([]);
-            }
-        });
-    }
+    setTimeout(() => {
+        checkedOptions();
+    }, 200);
 
     $("#access").change(function(){
         var selected = $(this).val();
@@ -212,9 +159,119 @@
             $(".hierarchy-checkbox,.hierarchy-root-checkbox").prop("checked", false);
         }
     });
+    function fetchPermissions(accessForId) {
+        var roleActions = "<?php echo json_encode($roleActions); ?>";        
+        $.ajax({
+            url: "{{ url('/useraccess/role/permissions') }}",
+            method: 'GET',
+            data: { interface_access: accessForId },
+            dataType: 'json',
+            success: function(response) {
+                var ids = [];
+                var action_html = 
+                    `<div class="row-fluid" id="accrss_tree">
+                        <div class="hierarchy-checkboxes child-expanded" rel="test">
+                            <input class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 hierarchy-root-checkbox" type="checkbox" name="selNodes_all[]" id="all" value="All">
+                            <label class="hierarchy-root-label text-sm font-medium text-gray-700 dark:text-gray-300 ml-1">All Permissions</label> 
+                        </div>
+                    </div>`;
+                  action_html += '<div class="hierarchy-root-child hierarchy-node mt-2" style="width: 95%; left: 20px; top: 50px; display: block;" rel="test">';
+                if (response.data) {
+                    $.each(response.data, function(module, actions) {
+                        action_html += `<div class="hierarchy-node border-l-2 border-gray-100 dark:border-gray-750 pl-4 py-1 child-expanded">`;
+                        action_html += `<input class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 hierarchy-checkbox" id="middle_node_${module}" type="checkbox">`;
+                        action_html += `<label class="hierarchy-label text-sm font-semibold text-gray-800 dark:text-gray-200 ml-1">${module}</label>`;
+                        $.each(actions, function(index, action) {
+                            // console.log('Initial roleActions:', roleActions , action.id.toString());
+                            ids.push(action.id.toString());
+                            action_html += `<div class="hierarchy-node leaf flex items-center pl-4 " data-action-id="${action.id}">`;
+                            action_html += `<input class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 hierarchy-checkbox" id="node_${action.id}" type="checkbox" name="selNodes[]" value="${action.id}" 
+                            ${roleActions.includes(Number(action.id.toString())) ? 'checked' : ''}>`;
+                            action_html += `<label class="hierarchy-label text-xs ml-2 text-gray-600 dark:text-gray-400">`;
+                            action_html += `${action.menu_label} ${action.menu_status == 1?'(Admin Menu)':'' }`;
+                            
+                                let extra_options_imvalue = {};
+                                try {
+                                    extra_options_imvalue = JSON.parse(action.extra_options || '{}');
+                                } catch (e) {
+                                    extra_options_imvalue = {};
+                                }
+                                let prefix_imvalue = extra_options_imvalue.prefix ? `/${extra_options_imvalue.prefix}` : '';
 
-    $("#access_for").change(function(){
-        fetchPermissions($(this).val());
-    });
+                                action_html += `<span class='text-indigo-600 dark:text-indigo-400'> | URL => ${prefix_imvalue}${action.action}</span>`;
+                            action_html += `</label>`;
+                            action_html += `</div>`;
+                        });
+                        action_html += `</div>`;
+                    });
+                }
+                action_html += `</div>`;
+                $("#roleAccesstree").html(action_html);
+                setTimeout(() => {
+                    initHierarchicalCheckboxes("#roleAccesstree");
+                    checkedOptions();
+                }, 200); 
+            },
+            error: function() {
+            }
+        });
+    }
+    function initHierarchicalCheckboxes(selector) {
+        const $el = selector ? $(selector) : $(document);
+        // $el.find(".hierarchy-root-child div div").hide().parent().removeClass("child-expanded");
+        $el.find(".hierarchy-checkboxes, .hierarchy-root-child, .hierarchy-node").each(function () {
+            const $this = $(this);
+            if ($this.find("> .expand-collapse-button").length === 0) {
+                $this.prepend('<div class="expand-collapse-button"></div>');
+            }
+        });
+
+        // Update parent checkbox states based on children checked state
+        $el.find(".hierarchy-root-child > .hierarchy-node").each(function() {
+            const $middleNode = $(this);
+            const $middleCheckbox = $middleNode.children("input.hierarchy-checkbox");
+            const $leafCheckboxes = $middleNode.find(".leaf input.hierarchy-checkbox");
+            if ($leafCheckboxes.length > 0) {
+                const allChecked = $leafCheckboxes.length === $leafCheckboxes.filter(":checked").length;
+                $middleCheckbox.prop("checked", allChecked);
+            }
+        });
+
+        // Update root checkbox states based on children checked state
+        $el.find(".hierarchy-checkboxes").each(function() {
+            const $root = $(this);
+            const rel = $root.attr("rel");
+            const $rootChild = $(".hierarchy-root-child[rel=" + rel + "]");
+            const $rootCheckbox = $root.find(".hierarchy-root-checkbox");
+            const $allCheckboxes = $rootChild.find("input.hierarchy-checkbox");
+            if ($allCheckboxes.length > 0) {
+                const allChecked = $allCheckboxes.length === $allCheckboxes.filter(":checked").length;
+                $rootCheckbox.prop("checked", allChecked);
+            }
+        });
+    }
+    function checkedOptions() {
+        const checkedInputs = $('.hierarchy-node.leaf.child-expanded').parent('div');
+        var groups = {};
+
+        $(checkedInputs).find('.hierarchy-checkbox').each(function () {
+            var classes = $(this).attr('class').split(' ');
+            var groupClass = classes.find(cls => cls.startsWith('middle_node_'));
+            if (!groups[groupClass]) {
+                groups[groupClass] = { total: 0, checked: 0 };
+            }
+            groups[groupClass].total++;
+
+            if ($(this).is(':checked')) {
+                groups[groupClass].checked++;
+            }
+        });
+        $.each(groups,function (i, val) {
+            if(val['total'] === val['checked']){
+                $('.' +  i  + ' .hierarchy-checkbox').eq(0).prop('checked', true);
+            }
+        });
+    }
+    
 </script>
 @endpush

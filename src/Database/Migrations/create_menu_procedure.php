@@ -23,11 +23,38 @@ return new class extends Migration
                 IN menu_status VARCHAR(50)
             )
             BEGIN
+
+                DECLARE menuItem VARCHAR(20);
+                DECLARE menuCondition TEXT DEFAULT '';
+
+                WHILE LOCATE(',', menu_type) > 0 DO
+
+                    SET menuItem = SUBSTRING_INDEX(menu_type, ',', 1);
+
+                    SET menuCondition = CONCAT(
+                        menuCondition,
+                        IF(menuCondition = '', '', ' OR '),
+                        'FIND_IN_SET(''', menuItem, ''', module_action.menu_type)'
+                    );
+
+                    SET menu_type = SUBSTRING(
+                        menu_type,
+                        LOCATE(',', menu_type) + 1
+                    );
+
+                END WHILE;
+                
+                SET menuCondition = CONCAT(
+                    menuCondition,
+                    IF(menuCondition = '', '', ' OR '),
+                    'FIND_IN_SET(''', menu_type, ''', module_action.menu_type)'
+                );
+                
                 SET @menu_list = REPLACE(menu_status, ',', ''',''');
                 IF (access_type = 'All') THEN
                     SET @sql = CONCAT(
                         'SELECT * FROM module_action ',
-                        'WHERE FIND_IN_SET(', menu_type, ', menu_type)',
+                        'WHERE (', menuCondition, ')',
                         'AND status = \"1\" ',
                         'AND menu_status IN (''', @menu_list, ''') ',
                         'AND id IN (',
@@ -41,7 +68,7 @@ return new class extends Migration
                 ELSE
                     SET @sql = CONCAT(
                         'SELECT * FROM module_action ',
-                        'WHERE FIND_IN_SET(', menu_type, ', menu_type)',
+                        'WHERE (', menuCondition, ')',
                         'AND status = \"1\" ',
                         'AND menu_status IN (''', @menu_list, ''') ',
                         'AND id IN (',

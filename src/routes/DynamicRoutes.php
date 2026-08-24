@@ -5,7 +5,7 @@ namespace Techaxion\UserAccess\Routes;
 use Illuminate\Support\Facades\Route;
 use Techaxion\UserAccess\Models\Roles;
 use Techaxion\UserAccess\Models\UserRoleMapping;
-use Techaxion\UserAccess\Models\AccessFor;
+use Techaxion\UserAccess\Models\InterfaceAccess;
 use Illuminate\Support\Facades\DB;
 use Techaxion\UserAccess\Controllers\MenuController;
 use Illuminate\Routing\RouteCollection;
@@ -16,13 +16,15 @@ $dbConn = \DB::connection($connection);
 $user_id = session('admin_user_id') ?? '';
 // dd($user_id);
 $roleid = 0;
-$menu_typeArray = [];
+$menu_typeArray = $access_forArr = [];
 if ($user_id) {
     $userRoleMapping = new UserRoleMapping();
     $role_id = $userRoleMapping->getUserRole($user_id);
     if($role_id){
-        $menu_typeArray = Roles::where('id', $role_id[0])->pluck('access_for')->toArray();
-        $roleid = $role_id[0];
+        $menu_typeArray = Roles::whereIn('id', $role_id)->pluck('interface_access')->toArray();
+        $access_forArr = (is_array($menu_typeArray) && count($menu_typeArray) > 0 )  ? explode(",",$menu_typeArray[0] ) :  [];
+      
+        $roleid =  (is_array($role_id) && count($role_id) > 0 )  ?  $role_id[0] : "";
     }
 }
 
@@ -34,45 +36,46 @@ $dataAdmin = $dbConn->table('module_action')->select('module_action.*')->where('
         })
         ->orWhereIn('module_action.id', function ($q) use ($user_id, $roleid) {
             $q->select('action_id')->from('right_action')->where('user_id', $user_id)->where('role_id', $roleid);
-        });
+        })
+        ->orWhere('extra_options', 'LIKE', '%"filters":""%')
+        ->orWhere('extra_options', 'NOT LIKE', '%auth%');
     })
-    ->where(function ($query) use ($menu_typeArray) {
-        foreach ($menu_typeArray as $type) {
-            $query->orWhereRaw('FIND_IN_SET(?, menu_type)', [$type]);
+    ->where(function($q) use ($access_forArr) {
+        foreach ($access_forArr as $type) {
+            if ($type) {
+                $q->orWhereRaw('FIND_IN_SET(?, menu_type)', [$type]);
+            }
         }
     })
     ->get()->toArray();
-
-    // dd($dataAdmin->toSql(), $dataAdmin->getBindings());
+ 
+// dd($dataAdmin->toSql(), $dataAdmin->getBindings());
 // var_dump($dataAdmin);die;
 $dataAdmin = json_decode(json_encode($dataAdmin), true);
 // echo "<pre>";print_r($dataAdmin ); die;
 $urlArr = [];
 foreach ($dataAdmin as $key => $value) {
     $controller = $value['controller'];
-    $method = $value['method']!=''?$value['method']:'index';
-    $request_method = explode(",",$value['route_type']);
-    $extra_options = json_decode($value['extra_options'],1);
+    $method = $value['method'] != '' ? $value['method'] : 'index';
+    $request_method = explode(",", $value['route_type']);
+    $extra_options = json_decode($value['extra_options'], 1);
     $filter = $extra_options['filters'] ?? '';
-    $filter = $filter != '' ? explode(",",str_replace(" ","",$filter)) : [];
+    $filter = $filter != '' ? explode(",", str_replace(" ", "", $filter)) : [];
     $route_name = $extra_options['route_name'] ?? '';
-    $prefix= $extra_options['prefix'] ?? '';
+    $prefix = $extra_options['prefix'] ?? '';
 
     $action = $value['action'];
-    $removeAfter = "/{";
 
-    $pos = strpos($action, $removeAfter);
-    $result = $action;
-    if ($pos !== false) {
-        $result = substr($action, 0, $pos);
+    if (!empty($prefix) && (str_starts_with($action, '/' . $prefix) || str_starts_with($action, $prefix))) {
+        $prefix = '';
     }
-    $result1 = str_replace("/",".",ltrim($result,"/"));
+
     if (count($request_method) > 1) {
-        Route::prefix($prefix)->match($request_method,$value['action'], [$controller, $method])->middleware($filter)->name($route_name);
+        Route::prefix($prefix)->match($request_method,$action, [$controller, $method])->middleware($filter)->name($route_name);
         $urlArr[] = $route_name;
     }else{
         $request_method = $request_method[0];
-        Route::prefix($prefix)->$request_method($value['action'], [$controller, $method])->middleware($filter)->name($route_name);
+        Route::prefix($prefix)->$request_method($action, [$controller, $method])->middleware($filter)->name($route_name);
         $urlArr[] = $route_name;
     }
 }
@@ -82,10 +85,11 @@ unset($dataAdmin, $value, $key);
 
 app()->booted(function () use ($urlArr) { 
     $content = USERACCESS_CONTENT;
+    // $content = ['menu_migrated'=>"yes"];
     $menu_migrated = $content['menu_migrated'];
     if ($menu_migrated == "yes") {
         $routes = Route::getRoutes()->getRoutes();   
-        $newCollection = new \Illuminate\Routing\RouteCollection();
+        $newCollection = new RouteCollection();
         $excludeModules = ["", "Profile","Register","Login","Password","Verification","Logout","Confirm Password"];
         foreach ($routes as $route) {
             $module_label  = "";

@@ -47,24 +47,15 @@ class InitPackageConfigCommand extends Command
             if ($user) {
                 $userId = $user->id;
                 $this->info("User ID for {$assignuseremail}: {$userId}");
-                // $existrole = Roles::where('name', 'All')->where('access_for',1)->first();
-                // if(!$existrole){
-                //     Roles::insert([
-                //         'name' => 'All',
-                //         'access' => 'All',
-                //         'access_for' => 1,
-                //         'description' => 'All Access',
-                //         'created_at' => date('Y-m-d H:i:s')
-                //     ]);
-                // }
-                $existsuperadminrole = Roles::where('name', 'Super Admin')->where('access_for',2)->first();
+             
+                $existsuperadminrole = Roles::where('name', 'Super Admin')->where('interface_access',2)->first();
                 if($existsuperadminrole){
                     $roleId = $existsuperadminrole->id;
                 }else{
                     $roleId = Roles::insertGetId([
                         'name' => 'Super Admin',
                         'access' => 'All',
-                        'access_for' => 2,
+                        'interface_access' => 2,
                         'description' => 'All Access',
                         'created_at' => date('Y-m-d H:i:s')
                     ]);

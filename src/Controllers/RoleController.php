@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Techaxion\UserAccess\Models\Roles;
 use Techaxion\UserAccess\Models\ModuleAction;
-use Techaxion\UserAccess\Models\AccessFor;
+use Techaxion\UserAccess\Models\InterfaceAccess;
 use Techaxion\UserAccess\Models\RolesAction;
 
 class RoleController extends Controller{
@@ -17,28 +17,37 @@ class RoleController extends Controller{
        $this->useraccessData = USERACCESS_CONTENT;
     }
     public function list(){
-        $roles = Roles::with(['access_for'])->get()->toArray();
+        $rolesList = Roles::get();
+        foreach ($rolesList as $role) {
+            $role->interface_access = $role->interface_access_names;
+        }
+        $roles = $rolesList->toArray();
+ 
         $frontendView = $this->useraccessData['frontend'] == 'tailwind' ? 'useraccess::tailwind.roles.index' : 'useraccess::bootstrap.roles.index';
         return view($frontendView, ['roles' => $roles]);
     }
     public function create(){
         $moduleAction = new ModuleAction();
         $allRoutes = $moduleAction->getAllActions();
-        $accessFor = AccessFor::get()->toArray();
+        $accessFor = InterfaceAccess::get()->toArray();
         $frontendView = $this->useraccessData['frontend'] == 'tailwind' ? 'useraccess::tailwind.roles.create' : 'useraccess::bootstrap.roles.create';
         return view($frontendView, compact('allRoutes','accessFor'));
     }
     public function store(Request $request){
+        $interface_access = $request->interface_access;
+        if (is_array($interface_access)) {
+            $interface_access = implode(',', $interface_access);
+        }
         $inputData = [
             'name' => $request->name,
             'access' => $request->access,
-            'access_for' => $request->access_for,
+            'interface_access' => $interface_access,
             'description' => $request->description
         ];
         $validator = Validator::make( $inputData, [
             'name' => 'required',
             'access' => 'required',
-            'access_for' => 'required'
+            'interface_access' => 'required'
         ]);
         if ($validator->fails()) {
             return redirect('/useraccess/role/create')
@@ -47,6 +56,7 @@ class RoleController extends Controller{
         }else{
             $role_id = Roles::insertGetId($inputData);
             $actions = $request['selNodes'] ?? [];
+            // echo "<pre>"; print_r(count($actions)); die;
             if(count($actions) > 0){
                 $insertactions = [];
                 foreach ($actions as $key => $action) {
@@ -62,21 +72,40 @@ class RoleController extends Controller{
     public function edit(Roles $role){
         $moduleAction = new ModuleAction();
         $allRoutes = $moduleAction->getAllActions();
-        $accessFor = AccessFor::get()->toArray();
+        $accessFor = InterfaceAccess::get()->toArray();
         $roleActions = $role->getRoleActions($role->id);
         $frontendView = $this->useraccessData['frontend'] == 'tailwind' ? 'useraccess::tailwind.roles.edit' : 'useraccess::bootstrap.roles.edit';
         return view($frontendView, compact('role','allRoutes','accessFor','roleActions'));
     }
 
     public function permissions(Request $request){
-        $accessForId = $request->query('access_for');
+        $accessForId = $request->query('interface_access');
+        
         if (!$accessForId) {
-            return response()->json(['data' => [], 'message' => 'access_for is required'], 422);
+            return response()->json(['data' => [], 'message' => 'Interface access is required'], 422);
         }
 
-        $actions = ModuleAction::where('status', 1)
-            ->whereRaw('FIND_IN_SET(?, menu_type)', [$accessForId])
-            ->orderBy('menu_sequence', 'ASC')
+        $query = ModuleAction::where('status', 1);
+        if (is_array($accessForId)) {
+            $query->where(function($q) use ($accessForId) {
+                foreach ($accessForId as $id) {
+                    if ($id) {
+                        $q->orWhereRaw('FIND_IN_SET(?, menu_type)', [$id]);
+                    }
+                }
+            });
+        } else {
+            $ids = explode(',', $accessForId);
+            $query->where(function($q) use ($ids) {
+                foreach ($ids as $id) {
+                    if ($id) {
+                        $q->orWhereRaw('FIND_IN_SET(?, menu_type)', [$id]);
+                    }
+                }
+            });
+        }
+
+        $actions = $query->orderBy('menu_sequence', 'ASC')
             ->orderBy('menu_order', 'ASC')
             ->get(['id', 'module_label', 'menu_label', 'action', 'menu_status', 'extra_options', 'menu_type'])
             ->toArray();
@@ -90,16 +119,20 @@ class RoleController extends Controller{
     }
 
     public function update(Request $request,Roles $role){
+        $interface_access = $request->interface_access;
+        if (is_array($interface_access)) {
+            $interface_access = implode(',', $interface_access);
+        }
         $inputData = [
             'name' => $request->name,
             'access' => $request->access,
-            'access_for' => $request->access_for,
+            'interface_access' => $interface_access,
             'description' => $request->description
         ];
         $validator = Validator::make( $inputData, [
             'name' => 'required',
             'access' => 'required',
-            'access_for' => 'required'
+            'interface_access' => 'required'
         ]);
         if ($validator->fails()) {
             return redirect('/useraccess/role/create')

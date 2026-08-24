@@ -65,8 +65,44 @@ jQuery('.hierarchy-checkboxes[rel=IDENTIFIER]').on('checkboxesUpdate',function()
 
 **/
 
+function initHierarchicalCheckboxes(selector) {
+  const $el = selector ? jQuery(selector) : jQuery(document);
+  $el.find(".hierarchy-root-child div div").hide().parent().removeClass("child-expanded");
+  $el.find(".hierarchy-checkboxes, .hierarchy-root-child, .hierarchy-node").each(function () {
+    const $this = jQuery(this);
+    if ($this.find("> .expand-collapse-button").length === 0) {
+      $this.prepend('<div class="expand-collapse-button"></div>');
+    }
+  });
+
+  // Update parent checkbox states based on children checked state
+  $el.find(".hierarchy-root-child > .hierarchy-node").each(function() {
+      const $middleNode = jQuery(this);
+      const $middleCheckbox = $middleNode.children("input.hierarchy-checkbox");
+      const $leafCheckboxes = $middleNode.find(".leaf input.hierarchy-checkbox");
+      if ($leafCheckboxes.length > 0) {
+          const allChecked = $leafCheckboxes.length === $leafCheckboxes.filter(":checked").length;
+          $middleCheckbox.prop("checked", allChecked);
+      }
+  });
+
+  // Update root checkbox states based on children checked state
+  $el.find(".hierarchy-checkboxes").each(function() {
+      const $root = jQuery(this);
+      const rel = $root.attr("rel");
+      const $rootChild = jQuery(".hierarchy-root-child[rel=" + rel + "]");
+      const $rootCheckbox = $root.find(".hierarchy-root-checkbox");
+      const $allCheckboxes = $rootChild.find("input.hierarchy-checkbox");
+      if ($allCheckboxes.length > 0) {
+          const allChecked = $allCheckboxes.length === $allCheckboxes.filter(":checked").length;
+          $rootCheckbox.prop("checked", allChecked);
+      }
+  });
+}
+
+window.initHierarchicalCheckboxes = initHierarchicalCheckboxes;
+
 jQuery(document).ready(function () {
-  jQuery(".hierarchy-checkboxes .hierarchy-root-child div div").hide();
   jQuery(".hierarchy-checkboxes .hierarchy-root-child")
     .attr("rel", function () {
       const $this = jQuery(this);
@@ -74,11 +110,10 @@ jQuery(document).ready(function () {
     })
     .appendTo("body")
     .hide();
-  jQuery(
-    ".hierarchy-checkboxes, .hierarchy-root-child .hierarchy-node"
-  ).prepend('<div class="expand-collapse-button"></div>');
-  // Root label toggles root-child / Popup layer as a whole
-  jQuery(".hierarchy-root-label").click(function () {
+
+  initHierarchicalCheckboxes(document);
+
+  jQuery(document).on("click", ".hierarchy-root-label", function () {
     const $this = jQuery(this);
     const $thisNode = $this.parent();
     const rel = $thisNode.attr("rel");
@@ -97,10 +132,13 @@ jQuery(document).ready(function () {
     }
   });
 
-  jQuery(".expand-collapse-button").click(function () {
-    jQuery(this).siblings(".hierarchy-label, .hierarchy-root-label").click();
+  jQuery(document).on("click", ".expand-collapse-button", function () {
+      jQuery(this).siblings(".hierarchy-label").click();
+
+    // For root node
+    jQuery(this).siblings(".hierarchy-root-label").click();
   });
-  jQuery(".hierarchy-root-checkbox").change(function () {
+  jQuery(document).on("change", ".hierarchy-root-checkbox", function () {
     const $this = jQuery(this);
     //$thisNode is parent to current checkbox so it would represent current level node
     const $thisNode = $this.parent();
@@ -114,7 +152,7 @@ jQuery(document).ready(function () {
   });
 
   // Each node's label toggles the node's child / label's sibling
-  jQuery(".hierarchy-node .hierarchy-label").click(function () {
+  jQuery(document).on("click", ".hierarchy-node .hierarchy-label", function () {
     const $this = jQuery(this);
     const $thisNode = $this.parent();
     if (!$thisNode.hasClass("child-expanded")) {
@@ -128,7 +166,7 @@ jQuery(document).ready(function () {
   });
 
   // Each node's checkbox toggles the node's child / checkbox's sibling
-  jQuery(".hierarchy-node .hierarchy-checkbox").change(function () {
+  jQuery(document).on("change", ".hierarchy-node .hierarchy-checkbox", function () {
     const $this = jQuery(this);
     //$thisNode is parent to current checkbox so it would represent current level node
     const $thisNode = $this.parent();

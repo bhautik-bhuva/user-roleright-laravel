@@ -1,0 +1,191 @@
+/* --> Generic hierarcy checkbox fields*/
+input[type=checkbox]{
+    height: 20px;
+    width: 20px;
+}
+.hierarchy-checkboxes{
+    float: left;
+    width: 200px;
+    border: 1px solid transparent;
+}
+input.hierarchy-root-checkbox[type=checkbox]{
+    float: left;
+    margin: 6px 8px 0 5px;
+}
+label.hierarchy-root-label{
+    font-weight: normal;
+    padding: 3px;
+    margin: 0;
+    color: #000;
+}
+label.hierarchy-root-label:hover,
+.hierarchy-root-child .hierarchy-label:hover{
+    /* background: #eee; */
+}
+.hierarchy-checkboxes.child-expanded{
+    border-bottom: none;
+}
+.hierarchy-root-child{
+    /* position: absolute; */
+    display: none;
+    width: 400px;
+    z-index: 55;
+    background: #fff;
+    border-top: none;
+}
+/* .hierarchy-root-child .hierarchy-node{
+    clear: both;
+    display: block;
+    padding-left: 8px;
+    background: url("./images/dashed-line-vertical.gif") repeat-y scroll left top rgba(0, 0, 0, 0);
+    margin-left: 25px;
+  
+}
+.hierarchy-root-child .hierarchy-label{
+    background: url("./images/dashed-line-horizontal.gif") no-repeat scroll 13px 12px rgba(0, 0, 0, 0);
+    margin: 0 0 0 -20px;
+    font-weight: normal;
+    padding-top: 8px;
+    color: #000;
+    display:block;
+} */
+
+/* .hierarchy-checkboxes .expand-collapse-button,
+.hierarchy-root-child .hierarchy-node .expand-collapse-button{
+  display:block;
+  content:" ";
+  float:left;
+   background: url("../../vendor/techaxion/user-roleright-laravel/src/assets/hierarchical/images/expand.png") no-repeat scroll 0 4px transparent;
+  width:16px;
+  height:16px;
+  margin-top: 1px;
+} */
+/* .hierarchy-checkboxes.child-expanded .expand-collapse-button,
+.hierarchy-root-child .hierarchy-node.child-expanded >.expand-collapse-button{
+  background: url("../../vendor/techaxion/user-roleright-laravel/src/assets/hierarchical/images/collapse.png") no-repeat scroll 0 4px transparent;
+} */
+.hierarchy-root-child .hierarchy-node.leaf .expand-collapse-button{
+  background:none;
+  width:0;
+}
+.hierarchy-root-child input[type=checkbox]{
+    float: left;
+    margin: 3px;
+    margin-top: 8px;
+}
+
+
+/* <-- Generic hierarcy checkbox fields*/
+
+.hierarchy-checkboxes {
+    float: left;
+    width: 200px;
+    border: 1px solid transparent;
+}
+
+
+/* Vertical tree line */
+.hierarchy-root-child .hierarchy-node {
+    position: relative;
+    clear: both;
+    display: block;
+    padding-left: 18px;
+    margin-left: 9px;
+}
+
+.hierarchy-root-child .hierarchy-node::before {
+    content: "";
+    position: absolute;
+    left: 0px;
+    top: 0;
+    bottom: 0;
+    border-left: 1px dashed #999;
+}
+
+/* Horizontal tree line */
+.hierarchy-root-child .hierarchy-label {
+    /* position: relative; */
+    margin: 0;
+    font-weight: normal;
+    padding: 7px 0 0px 18px;
+    display: block;
+}
+
+.hierarchy-root-child .hierarchy-node .hierarchy-node .hierarchy-label::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 17px;
+    width: 12px;
+    border-top: 1px dashed #999;
+    transform: translateY(-50%);
+}
+
+.hierarchy-root-child .hierarchy-label::before{
+        content: "";
+    position: absolute;
+    left: 2px;
+    top: 22px;
+    width: 12px;
+    border-top: 1px dashed #999;
+    transform: translateY(-50%);
+}
+
+
+/* Expand / Collapse button */
+.hierarchy-checkboxes .expand-collapse-button,
+.hierarchy-root-child .hierarchy-node .expand-collapse-button {
+    float: left;
+    width: 16px;
+    height: 16px;
+    margin-top: 9px;
+    border: 1px solid #999;
+    border-radius: 2px;
+    background: #fff;
+    position: relative;
+    cursor: pointer;
+}
+
+/* Minus */
+.hierarchy-checkboxes .expand-collapse-button::before,
+.hierarchy-root-child .hierarchy-node .expand-collapse-button::before {
+    content: "";
+    position: absolute;
+    left: 3px;
+    right: 3px;
+    top: 6px;
+    border-top: 2px solid #555;
+}
+
+/* Plus (collapsed only) */
+.hierarchy-checkboxes .expand-collapse-button::after,
+.hierarchy-root-child .hierarchy-node .expand-collapse-button::after {
+    content: "";
+    position: absolute;
+    top: 3px;
+    bottom: 3px;
+    left: 6px;
+    border-left: 2px solid #555;
+}
+
+/* Expanded state → show minus only */
+.hierarchy-checkboxes.child-expanded .expand-collapse-button::after,
+.hierarchy-root-child .hierarchy-node.child-expanded > .expand-collapse-button::after {
+    display: none;
+}
+
+/* Leaf nodes */
+.hierarchy-root-child .hierarchy-node.leaf .expand-collapse-button {
+    border: none;
+    background: transparent;
+}
+
+.hierarchy-root-child .hierarchy-node.leaf .expand-collapse-button::before,
+.hierarchy-root-child .hierarchy-node.leaf .expand-collapse-button::after {
+    display: none;
+}
+
+.hierarchy-root-child input[type=checkbox] {
+    float: left;
+    margin: 6px 8px 0 5px;
+}
