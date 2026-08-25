@@ -14,12 +14,12 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Str;
+ 
 
 class UserAccessServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-
         // This runs on every request
         $sessionname = config('session.cookie');
 
@@ -31,16 +31,13 @@ class UserAccessServiceProvider extends ServiceProvider
             session::put('admin_user_id' , $session->user_id);
             view()->share('admin_user_id', $session->user_id);
         }
+ 
     }
 
     public function register()
     {
         // Load migrations directly from the package (no need to publish)
-        $this->loadMigrationsFrom(__DIR__.'/database/migrations');
-
-        // $this->publishes([
-        //     __DIR__.'/routes/DynamicRoutes.php' => base_path('routes/UserAccessDynamicRoutes.php'),
-        // ], 'useraccess-routes');
+        $this->loadMigrationsFrom(__DIR__.'/Database/Migrations');
 
         // Load assets
         $this->publishes([
@@ -48,6 +45,18 @@ class UserAccessServiceProvider extends ServiceProvider
         ], 'useraccess-assets');
 
         $pluginPath = dirname(__FILE__). '/configuration.json';
+        if(!file_exists($pluginPath)){
+            $content = array(
+                "layout_path" => "",
+                "layout_file" => "",
+                "yield_container" => "",
+                "user_table" => "users",
+                "superadmin_userid" => "0",
+                "menu_migrated" => "no",
+                "frontend" => "bootstrap"
+            );
+            file_put_contents($pluginPath, json_encode($content));
+        }
         if(file_exists($pluginPath)){
             $content = file_get_contents($pluginPath);
             $content = json_decode($content, true);
@@ -65,9 +74,13 @@ class UserAccessServiceProvider extends ServiceProvider
         // Load views from the package
         $this->loadViewsFrom(__DIR__.'/views', 'useraccess');
 
-        // Register any application services if needed
-        // For example, you can bind interfaces to implementations here
-        $this->commands([ InitPackageConfigCommand::class, InstallPackageCommand::class, RemovePackageCommand::class, UpdatePackageCommand::class ]);
+        // Register commands
+        $this->commands([
+            InitPackageConfigCommand::class,
+            InstallPackageCommand::class,
+            RemovePackageCommand::class,
+            UpdatePackageCommand::class,
+            GenerateVueRoutesCommand::class,
+        ]);
     }
-
 }
