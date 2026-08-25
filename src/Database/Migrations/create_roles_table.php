@@ -11,16 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('roles', function (Blueprint $table) {
-            $table->id();
-            $table->string('name', 50);
-            $table->enum('access', ['All', 'Excluded', 'Selected', 'None']);
-            $table->text('interface_access');
-            $table->string('description', 255)->nullable();
-            $table->dateTime('created_at')->useCurrent();
-            $table->dateTime('updated_at')->nullable();
-            $table->primary('id');
-        });
+        if (!Schema::hasTable('roles')) {
+            Schema::create('roles', function (Blueprint $table) {
+                $table->id();
+                $table->string('name', 50);
+                $table->enum('access', ['All', 'Excluded', 'Selected', 'None']);
+                $table->text('interface_access');
+                $table->string('description', 255)->nullable();
+                $table->dateTime('created_at')->useCurrent();
+                $table->dateTime('updated_at')->nullable();
+                $table->primary('id');
+            });
+        }
     }
 
     /**

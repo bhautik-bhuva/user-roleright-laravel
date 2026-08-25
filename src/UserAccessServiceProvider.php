@@ -79,8 +79,7 @@ class UserAccessServiceProvider extends ServiceProvider
             InitPackageConfigCommand::class,
             InstallPackageCommand::class,
             RemovePackageCommand::class,
-            UpdatePackageCommand::class,
-            GenerateVueRoutesCommand::class,
+            UpdatePackageCommand::class
         ]);
     }
 }

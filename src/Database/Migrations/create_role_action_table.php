@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('role_action', function (Blueprint $table) {
-            $table->id();
-            $table->integer('role_id')->unsigned();
-            $table->integer('action_id')->unsigned();
-            $table->primary('id');
-        });
+        if (!Schema::hasTable('role_action')) {
+            Schema::create('role_action', function (Blueprint $table) {
+                $table->id();
+                $table->integer('role_id')->unsigned();
+                $table->integer('action_id')->unsigned();
+                $table->primary('id');
+            });
+        }
     }
 
     /**

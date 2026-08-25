@@ -11,24 +11,26 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('module_action', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('controller');
-            $table->string('method');
-            $table->text('action');
-            $table->set('route_type', ['post', 'get', 'put', 'patch', 'delete'])->comment('post,get,put,patch,delete');
-            $table->text('menu_type');
-            $table->string('menu_label')->nullable();
-            $table->enum('menu_status', ['0', '1'])->default('0');
-            $table->integer('menu_sequence');
-            $table->integer('menu_order');
-            $table->string('menu_icon');
-            $table->string('module_label');
-            $table->tinyInteger('status')->default(1)->comment('0 = INACTIVE, 1 = ACTIVE, 2 = MAINTENANCE');
-            $table->dateTime('created_date')->default(now())->useCurrentOnUpdate();
-            $table->json('extra_options')->nullable();
-        });
+        if (!Schema::hasTable('module_action')) {
+            Schema::create('module_action', function (Blueprint $table) {
+                $table->id();
+                $table->string('name');
+                $table->string('controller');
+                $table->string('method');
+                $table->text('action');
+                $table->set('route_type', ['post', 'get', 'put', 'patch', 'delete'])->comment('post,get,put,patch,delete');
+                $table->text('menu_type');
+                $table->string('menu_label')->nullable();
+                $table->enum('menu_status', ['0', '1'])->default('0');
+                $table->integer('menu_sequence');
+                $table->integer('menu_order');
+                $table->string('menu_icon');
+                $table->string('module_label');
+                $table->tinyInteger('status')->default(1)->comment('0 = INACTIVE, 1 = ACTIVE, 2 = MAINTENANCE');
+                $table->dateTime('created_date')->default(now())->useCurrentOnUpdate();
+                $table->json('extra_options')->nullable();
+            });
+        }
 
     }
 
