@@ -47,11 +47,7 @@ class UserAccessServiceProvider extends ServiceProvider
             __DIR__.'/assets/hierarchical' => public_path('assets/vendor/useraccess/hierarchical'),
         ], 'useraccess-assets');
 
-        // $this->publishes([
-        //     __DIR__.'/resources/errors/403.blade.php' => base_path('resources/views/errors/403.blade.php'),
-        // ], 'useraccess-assets');
-        
-        $pluginPath = dirname(__FILE__). '\configuration.json';
+        $pluginPath = dirname(__FILE__). '/configuration.json';
         if(file_exists($pluginPath)){
             $content = file_get_contents($pluginPath);
             $content = json_decode($content, true);

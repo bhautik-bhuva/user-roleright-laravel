@@ -139,8 +139,7 @@ class InitPackageConfigCommand extends Command
         $layoutPath = str_replace(DIRECTORY_SEPARATOR, "/", $layoutPath);
         $layoutPath = explode("/",$layoutPath);        
         $layoutPath = join(DIRECTORY_SEPARATOR, $layoutPath);
-         
-         // Write to config/useraccess.php
+        
         $configContent = json_encode([
             "layout_path" => base_path("$layoutPath"),
             "layout_file" => str_replace(".blade.php","",basename("$layoutPath")),

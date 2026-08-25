@@ -11,12 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('interface_access', function (Blueprint $table) {
-            $table->id();
-            $table->string('name', 50); 
-            $table->set('access_type', ['backend','frontend','api'])->comment('backend,frontend,api');
-            $table->primary('id');
-        });
+        if (!Schema::hasTable('interface_access')) {
+            Schema::create('interface_access', function (Blueprint $table) {
+                $table->id();
+                $table->string('name', 50); 
+                $table->set('access_type', ['backend','frontend','api'])->comment('backend,frontend,api');
+                $table->primary('id');
+            });
+        }
     }
 
     /**

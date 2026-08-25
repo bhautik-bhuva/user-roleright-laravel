@@ -34,13 +34,6 @@ class RemovePackageCommand extends Command
             }
         }
         
-        if (file_exists(base_path('config/useraccess.php'))) {
-            unlink(base_path('config/useraccess.php'));
-            $this->info('Configuration file removed.');
-        } else {
-            $this->warn('Configuration file does not exist.');
-        }
-
         // Remove the package's assets
         $assetsPath = public_path('assets/vendor/useraccess');
         if (\File::exists($assetsPath)) {
